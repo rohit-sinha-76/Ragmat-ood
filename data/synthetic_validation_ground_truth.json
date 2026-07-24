@@ -1,0 +1,252 @@
+{
+  "JVASP-183836": {
+    "formula": "TiGaFe",
+    "true_formation_energy": -0.23372,
+    "true_band_gap": 0.0
+  },
+  "JVASP-36105": {
+    "formula": "CeZnIn",
+    "true_formation_energy": -0.34595,
+    "true_band_gap": 0.0
+  },
+  "JVASP-17966": {
+    "formula": "InNi2",
+    "true_formation_energy": -0.02205,
+    "true_band_gap": 0.0
+  },
+  "JVASP-165865": {
+    "formula": "Sc2Ni",
+    "true_formation_energy": -0.40644,
+    "true_band_gap": 0.0
+  },
+  "JVASP-28969": {
+    "formula": "MoW3Se4S4",
+    "true_formation_energy": -0.70324,
+    "true_band_gap": 0.653
+  },
+  "JVASP-65616": {
+    "formula": "BaGaPt2",
+    "true_formation_energy": -0.22381,
+    "true_band_gap": 0.0
+  },
+  "JVASP-18838": {
+    "formula": "InPd3",
+    "true_formation_energy": -0.41255,
+    "true_band_gap": 0.0
+  },
+  "JVASP-67939": {
+    "formula": "BeGa2Co",
+    "true_formation_energy": -0.03435,
+    "true_band_gap": 0.0
+  },
+  "JVASP-92858": {
+    "formula": "Mg6NbSb",
+    "true_formation_energy": 0.06953,
+    "true_band_gap": 0.0
+  },
+  "JVASP-119980": {
+    "formula": "BeTeCl",
+    "true_formation_energy": 0.45959,
+    "true_band_gap": 0.0
+  },
+  "JVASP-11205": {
+    "formula": "K2VAgSe4",
+    "true_formation_energy": -0.90041,
+    "true_band_gap": 1.058
+  },
+  "JVASP-102692": {
+    "formula": "Ni6SnTe2",
+    "true_formation_energy": -0.16423,
+    "true_band_gap": 0.0
+  },
+  "JVASP-40095": {
+    "formula": "CaYHg2",
+    "true_formation_energy": -0.47974,
+    "true_band_gap": 0.0
+  },
+  "JVASP-64561": {
+    "formula": "Ba4YSb",
+    "true_formation_energy": 0.25831,
+    "true_band_gap": 0.0
+  },
+  "JVASP-105845": {
+    "formula": "PmNdIn2",
+    "true_formation_energy": -0.51224,
+    "true_band_gap": 0.0
+  },
+  "JVASP-194412": {
+    "formula": "Ta2CrOs",
+    "true_formation_energy": -0.30827,
+    "true_band_gap": 0.0
+  },
+  "JVASP-170924": {
+    "formula": "Bi2S2O",
+    "true_formation_energy": -0.77828,
+    "true_band_gap": 1.057
+  },
+  "JVASP-22944": {
+    "formula": "KGaS2",
+    "true_formation_energy": -1.16069,
+    "true_band_gap": 2.642
+  },
+  "JVASP-190178": {
+    "formula": "NbZnRuRh",
+    "true_formation_energy": -0.41519,
+    "true_band_gap": 0.0
+  },
+  "JVASP-21045": {
+    "formula": "ZnSeO3",
+    "true_formation_energy": -1.16781,
+    "true_band_gap": 4.133
+  },
+  "JVASP-7892": {
+    "formula": "BaY2NiO5",
+    "true_formation_energy": -2.93935,
+    "true_band_gap": 0.0
+  },
+  "JVASP-102691": {
+    "formula": "PrTl2InTe4",
+    "true_formation_energy": -0.67075,
+    "true_band_gap": 1.108
+  },
+  "JVASP-35274": {
+    "formula": "LaScSi",
+    "true_formation_energy": -0.63316,
+    "true_band_gap": 0.0
+  },
+  "JVASP-108016": {
+    "formula": "Er3In4Co2",
+    "true_formation_energy": -0.41078,
+    "true_band_gap": 0.0
+  },
+  "JVASP-189712": {
+    "formula": "Ti3Ga",
+    "true_formation_energy": -0.31411,
+    "true_band_gap": 0.0
+  },
+  "JVASP-107013": {
+    "formula": "ZrScMnNi3",
+    "true_formation_energy": -0.41904,
+    "true_band_gap": 0.0
+  },
+  "JVASP-133862": {
+    "formula": "BaYBr",
+    "true_formation_energy": -0.20388,
+    "true_band_gap": 0.0
+  },
+  "JVASP-74287": {
+    "formula": "YBeHg2",
+    "true_formation_energy": 0.04251,
+    "true_band_gap": 0.0
+  },
+  "JVASP-112158": {
+    "formula": "HfH8C6O4",
+    "true_formation_energy": -0.71226,
+    "true_band_gap": 2.378
+  },
+  "JVASP-71180": {
+    "formula": "Be2OsSe",
+    "true_formation_energy": 0.31271,
+    "true_band_gap": 0.0
+  },
+  "JVASP-122888": {
+    "formula": "HfV",
+    "true_formation_energy": 0.1943,
+    "true_band_gap": 0.0
+  },
+  "JVASP-132887": {
+    "formula": "Na5SrNbP4",
+    "true_formation_energy": -0.6996,
+    "true_band_gap": 1.306
+  },
+  "JVASP-69240": {
+    "formula": "BaSc2Nb",
+    "true_formation_energy": 0.61367,
+    "true_band_gap": 0.0
+  },
+  "JVASP-79655": {
+    "formula": "Ga",
+    "true_formation_energy": 0.00834,
+    "true_band_gap": 0.0
+  },
+  "JVASP-192398": {
+    "formula": "Sc2ZnIn",
+    "true_formation_energy": -0.41815,
+    "true_band_gap": 0.0
+  },
+  "JVASP-110884": {
+    "formula": "Y2CuAu",
+    "true_formation_energy": -0.6406,
+    "true_band_gap": 0.0
+  },
+  "JVASP-56588": {
+    "formula": "CrAgSe2",
+    "true_formation_energy": -0.1854,
+    "true_band_gap": 0.0
+  },
+  "JVASP-139615": {
+    "formula": "NaTaO",
+    "true_formation_energy": -0.70287,
+    "true_band_gap": 0.0
+  },
+  "JVASP-86256": {
+    "formula": "Ti4MnBi2",
+    "true_formation_energy": -0.27557,
+    "true_band_gap": 0.0
+  },
+  "JVASP-168031": {
+    "formula": "SrGa3Pd",
+    "true_formation_energy": -0.65761,
+    "true_band_gap": 0.0
+  },
+  "JVASP-29164": {
+    "formula": "Te2Mo3WSe6",
+    "true_formation_energy": -0.4881,
+    "true_band_gap": 0.58
+  },
+  "JVASP-182668": {
+    "formula": "ScBeRh2",
+    "true_formation_energy": -0.54487,
+    "true_band_gap": 0.0
+  },
+  "JVASP-125072": {
+    "formula": "Ar3Ta",
+    "true_formation_energy": 2.03085,
+    "true_band_gap": 0.0
+  },
+  "JVASP-140917": {
+    "formula": "NbCr3Ag2S8",
+    "true_formation_energy": -0.63762,
+    "true_band_gap": 0.0
+  },
+  "JVASP-190188": {
+    "formula": "ScAlZnCu",
+    "true_formation_energy": -0.4168,
+    "true_band_gap": 0.0
+  },
+  "JVASP-176433": {
+    "formula": "Nd3Y",
+    "true_formation_energy": -0.02033,
+    "true_band_gap": 0.0
+  },
+  "JVASP-107098": {
+    "formula": "Tm2TeO2",
+    "true_formation_energy": -3.10903,
+    "true_band_gap": 0.459
+  },
+  "JVASP-108771": {
+    "formula": "K5Bi4",
+    "true_formation_energy": -0.44708,
+    "true_band_gap": 0.0
+  },
+  "JVASP-129625": {
+    "formula": "ScSn",
+    "true_formation_energy": -0.48051,
+    "true_band_gap": 0.0
+  },
+  "JVASP-111246": {
+    "formula": "AcY3",
+    "true_formation_energy": 0.04347,
+    "true_band_gap": 0.0
+  }
+}
