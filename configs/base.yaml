@@ -1,0 +1,45 @@
+# Base experiment configuration — overridden by experiment-specific YAMLs.
+# All values here are the defaults; experiment configs only need to specify
+# what differs from these defaults.
+
+experiment_name: "base"
+tier: 0
+target_property: "formation_energy"
+split_type: "iid"
+representation: "matminer"
+retrieval_mode: "none"
+fusion_method: "concat"
+top_k: 10
+encoder_property: "formation_energy"
+retrieval_index_property: "formation_energy"
+seed: 42
+device: "cuda"
+
+cgcnn:
+  hidden_dim: 64
+  n_conv_layers: 3
+  cutoff_radius: 8.0
+  n_gaussian_basis: 40
+  dropout_rate: 0.1
+  batch_size: 512           # GPU batch size (T1000 with batch=512 + grad accum=1)
+  gradient_accumulation_steps: 1
+  n_epochs: 400            # Full convergence budget (Xie & Grossman 2018 used 500)
+  lr: 0.001
+  weight_decay: 1.0e-4    # AdamW decoupled regularisation (Loshchilov & Hutter 2019)
+  lr_scheduler: "cosine"
+  early_stopping_patience: 50  # Must exceed cosine period; 15 terminated too early
+  checkpoint_every_epoch: false  # Save only best checkpoint to conserve disk
+
+tier0:
+  composition_featurizer: "ElementProperty_magpie"
+  structure_featurizer: "CrystalNNFingerprint_SiteStatsFingerprint"
+  downstream_model: "random_forest"
+  n_estimators: 200
+
+uq:
+  mc_dropout_n_passes: 30
+  conformal_coverage: 0.9
+
+wandb:
+  project: "ragmat-ood-tier0"
+  entity: "YOUR_WANDB_USERNAME"
