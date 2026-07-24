@@ -35,33 +35,33 @@ In this study, we investigate the root failure mechanism of **Crystal Graph Neur
 ```
 
 ### Key Scientific Discoveries:
-1. **The Weight-Level Failure Mode:** CGCNN's formation energy error increases **8.4-fold** under element exclusion (MAE degrades from $0.066$ to $0.557$\,eV/atom). Unvisited element columns in the first linear embedding matrix $\mathbf{W}_{\text{emb}} \in \mathbb{R}^{64 \times 92}$ receive zero gradients during training ($\nabla_{\mathbf{W}_{\text{excluded}}} \mathcal{L} = \mathbf{0}$), retaining random initial values that inject isotropic noise into every downstream message-passing layer.
-2. **The RAG Audit:** Post-pooling retrieval augmentation (RAG) performs statistically indistinguishably from a capacity-matched random control vector ($p = 0.568$), proving that late-stage fusion after global mean-pooling cannot recover structural details already destroyed by uninitialized node features.
+1. **The Weight-Level Failure Mode:** CGCNN's formation energy error increases **8.4-fold** under element exclusion (MAE degrades from 0.066 to 0.557 eV/atom). Unvisited element columns in the first linear embedding matrix **W**<sub>emb</sub> ∈ ℝ<sup>64×92</sup> receive zero gradients during training (∇<sub>**W**<sub>excluded</sub></sub> L = **0**), retaining random initial values that inject isotropic noise into every downstream message-passing layer.
+2. **The RAG Audit:** Post-pooling retrieval augmentation (RAG) performs statistically indistinguishably from a capacity-matched random control vector (*p* = 0.568), proving that late-stage fusion after global mean-pooling cannot recover structural details already destroyed by uninitialized node features.
 3. **Inference-Time Recovery (Without Retraining):**
-   - **Mahalanobis Latent Space Gating:** Detects OOD failure states with $\text{AUROC} > 0.999$ and routes them to a Random Forest fallback, capping error at $0.181$\,eV/atom.
-   - **Zero-Shot Node Imputation (ZSNI):** Reconstructs uninitialized embedding weight columns using periodic-table 2D coordinates, reducing Formation Energy error by **67.1%** ($0.183$\,eV/atom) and recovering split-conformal coverage from **18.5% to 58.6%**.
+   - **Mahalanobis Latent Space Gating:** Detects OOD failure states with AUROC > 0.999 and routes them to a Random Forest fallback, capping error at 0.181 eV/atom.
+   - **Zero-Shot Node Imputation (ZSNI):** Reconstructs uninitialized embedding weight columns using periodic-table 2D coordinates, reducing Formation Energy error by **67.1%** (0.183 eV/atom) and recovering split-conformal coverage from **18.5% to 58.6%**.
 
 ---
 
 ## Mathematical Formulation
 
 ### 1. The Weight-Level Failure Mechanism
-Crystal GNNs convert atomic species $Z_i$ into initial node representations $\mathbf{h}_i^{(0)}$ via a linear lookup layer:
+Crystal GNNs convert atomic species *Z<sub>i</sub>* into initial node representations **h**<sub>i</sub><sup>(0)</sup> via a linear lookup layer:
 
-$$\mathbf{h}_i^{(0)} = \mathbf{W}_{\text{emb}} \, \text{one\_hot}(Z_i) + \mathbf{b}$$
+$$\mathbf{h}_i^{(0)} = \mathbf{W}_{\text{emb}} \cdot \text{one\_hot}(Z_i) + \mathbf{b}$$
 
-When an element $Z_{\text{excluded}}$ (e.g., Selenium $\text{Se}$) is withheld during training, the partial derivative is identically zero:
+When an element *Z*<sub>excluded</sub> (e.g., Selenium, Se) is withheld during training, the partial derivative is identically zero:
 
 $$\frac{\partial \mathcal{L}}{\partial \mathbf{W}_{\text{emb}}[:, Z_{\text{excluded}}]} = \mathbf{0}$$
 
-Consequently, $\mathbf{W}_{\text{emb}}[:, Z_{\text{excluded}}]$ retains its random initialization weights ($\mathcal{U}[-a, a]$), acting as an uncalibrated noise vector that corrupts all subsequent graph message-passing convolutions.
+Consequently, **W**<sub>emb</sub>[:, *Z*<sub>excluded</sub>] retains its random initialization weights (~U[-a, a]), acting as an uncalibrated noise vector that corrupts all subsequent graph message-passing convolutions.
 
 ### 2. Zero-Shot Node Imputation (ZSNI)
-Prior to inference, **ZSNI** imputes the uninitialized column by distance-weighted averaging of the $k$-nearest seen elements in 2D periodic table space ($\text{row}_j, \text{group}_j$):
+Prior to inference, **ZSNI** imputes the uninitialized column by distance-weighted averaging of the *k*-nearest seen elements in 2D periodic table space (row<sub>j</sub>, group<sub>j</sub>):
 
 $$\hat{\mathbf{w}}_{Z_{\text{excluded}}} = \frac{1}{k_{\text{imp}}} \sum_{j \in \mathcal{N}_{k}(Z_{\text{excluded}})} \mathbf{w}_j$$
 
-Where $k_{\text{imp}} = 2$ optimal chemical neighbors (e.g., averaging Arsenic $\text{As}$ and Bromine $\text{Br}$ embeddings to reconstruct Selenium $\text{Se}$).
+Where *k*<sub>imp</sub> = 2 optimal chemical neighbors (e.g., averaging Arsenic As and Bromine Br embeddings to reconstruct Selenium Se).
 
 ---
 
@@ -71,12 +71,12 @@ Performance across 93,902 JARVIS-DFT crystals (with 95% bootstrap confidence int
 
 | Target Property | Evaluation Split | Baseline Random Forest | Base CGCNN Encoder | RAG True-NN (Concat) | RAG Random Control | Recovery Mechanism |
 |---|---|---|---|---|---|---|
-| **Formation Energy** *(eV/atom)* | **IID Split** | $0.106$ | **$0.066$** | $0.060$ ($0.059, 0.062$) | $0.062$ ($0.060, 0.064$) | — |
-| | **Family-Out** | $0.237$ | **$0.133$** | $0.140$ ($0.136, 0.144$) | $0.142$ ($0.138, 0.146$) | — |
-| | **Element-Out** | $0.181$ | **$0.557$** *(8.4× Error)* | $0.566$ ($0.556, 0.576$) | $0.556$ ($0.546, 0.566$) | **$0.181$** (Gated)<br> **$0.183$** (ZSNI, $k=2$) |
-| **Band Gap** *(eV)* | **IID Split** | $0.226$ | **$0.177$** | $0.173$ ($0.166, 0.180$) | $0.172$ ($0.165, 0.179$) | — |
-| | **Family-Out** | $0.253$ | **$0.174$** | $0.170$ ($0.163, 0.177$) | $0.171$ ($0.164, 0.178$) | — |
-| | **Element-Out** | $0.320$ | **$0.411$** *(2.3× Error)* | $0.415$ ($0.405, 0.425$) | $0.410$ ($0.400, 0.420$) | **$0.320$** (Gated)<br> **$0.322$** (ZSNI, $k=2$) |
+| **Formation Energy** *(eV/atom)* | **IID Split** | 0.106 | **0.066** | 0.060 (0.059, 0.062) | 0.062 (0.060, 0.064) | — |
+| | **Family-Out** | 0.237 | **0.133** | 0.140 (0.136, 0.144) | 0.142 (0.138, 0.146) | — |
+| | **Element-Out** | 0.181 | **0.557** *(8.4× Error)* | 0.566 (0.556, 0.576) | 0.556 (0.546, 0.566) | **0.181** (Gated)<br> **0.183** (ZSNI, *k*=2) |
+| **Band Gap** *(eV)* | **IID Split** | 0.226 | **0.177** | 0.173 (0.166, 0.180) | 0.172 (0.165, 0.179) | — |
+| | **Family-Out** | 0.253 | **0.174** | 0.170 (0.163, 0.177) | 0.171 (0.164, 0.178) | — |
+| | **Element-Out** | 0.320 | **0.411** *(2.3× Error)* | 0.415 (0.405, 0.425) | 0.410 (0.400, 0.420) | **0.320** (Gated)<br> **0.322** (ZSNI, *k*=2) |
 
 ---
 
@@ -128,7 +128,7 @@ For complete transparency, this matrix maps every table and figure in the manusc
 |---|---|---|---|
 | **Table 1** | Primary MAE Benchmark across IID, Family-Out, & Element-Out | `python scripts/run_phase6.py` | `final_result/*.json` |
 | **Table 2 & Fig 2** | Mahalanobis OOD Gating AUROC & Error Routing | `python scripts/run_gating_analysis.py` | `final_result/gating_report.md` |
-| **Table 3 & Fig 3** | Zero-Shot Node Imputation (ZSNI) $k$-ablation | `python scripts/run_conformal.py` | `final_result/conformal_report.md` |
+| **Table 3 & Fig 3** | Zero-Shot Node Imputation (ZSNI) *k*-ablation | `python scripts/run_conformal.py` | `final_result/conformal_report.md` |
 | **Table 4** | Split-Conformal Prediction Coverage & Interval Widths | `python scripts/run_conformal.py` | `final_result/conformal_report.md` |
 | **Figure 1** | Main MAE Comparison Bar Charts | `python scripts/generate_figures.py` | `paper/figures/fig1_mae_comparison.pdf` |
 | **Figure 4** | Periodic Table Chemical Proximity & Imputation Map | `python scripts/generate_figures.py` | `paper/figures/fig3_zsni_ablation.pdf` |
