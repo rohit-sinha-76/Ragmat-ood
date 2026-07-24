@@ -226,15 +226,15 @@ ragmat-ood/
 
 ### Citation
 
-If you find this codebase or research useful in your work, please cite our paper:
+If you use this codebase or research in your work, please cite the manuscript:
 
 ```bibtex
-@article{sinha2026cgcnn,
- title={Compositional Distribution Shift in Crystal Graph Convolutional Neural Networks: Mechanistic Diagnosis, RAG Audit, Mahalanobis Gating, and Zero-Shot Imputation},
- author={Sinha, Rohit},
- journal={Computational Materials Science},
- year={2026},
- publisher={Elsevier}
+@unpublished{sinha2026compositional,
+  title={Compositional Distribution Shift in Crystal Graph Convolutional Neural Networks: Mechanistic Diagnosis, RAG Audit, Mahalanobis Gating, and Zero-Shot Imputation},
+  author={Sinha, Rohit},
+  note={Preprint / Manuscript under review},
+  year={2026},
+  url={https://github.com/rohit-sinha-76/Ragmat-ood}
 }
 ```
 
