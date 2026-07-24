@@ -46,22 +46,29 @@ In this study, we investigate the root failure mechanism of **Crystal Graph Neur
 ## Mathematical Formulation
 
 ### 1. The Weight-Level Failure Mechanism
-Crystal GNNs convert atomic species *Z<sub>i</sub>* into initial node representations **h**<sub>i</sub><sup>(0)</sup> via a linear lookup layer:
+Crystal GNNs convert atomic species *Z*<sub>*i*</sub> into initial node representations **h**<sub>*i*</sub><sup>(0)</sup> via a linear lookup layer:
 
-$$\mathbf{h}_i^{(0)} = \mathbf{W}_{\text{emb}} \cdot \text{one\_hot}(Z_i) + \mathbf{b}$$
+```text
+h_i^{(0)} = W_emb · one_hot(Z_i) + b
+```
 
 When an element *Z*<sub>excluded</sub> (e.g., Selenium, Se) is withheld during training, the partial derivative is identically zero:
 
-$$\frac{\partial \mathcal{L}}{\partial \mathbf{W}_{\text{emb}}[:, Z_{\text{excluded}}]} = \mathbf{0}$$
+```text
+∂L / ∂W_emb[:, Z_excluded] = 0
+```
 
 Consequently, **W**<sub>emb</sub>[:, *Z*<sub>excluded</sub>] retains its random initialization weights (~U[-a, a]), acting as an uncalibrated noise vector that corrupts all subsequent graph message-passing convolutions.
 
 ### 2. Zero-Shot Node Imputation (ZSNI)
 Prior to inference, **ZSNI** imputes the uninitialized column by distance-weighted averaging of the *k*-nearest seen elements in 2D periodic table space (row<sub>j</sub>, group<sub>j</sub>):
 
-$$\hat{\mathbf{w}}_{Z_{\text{excluded}}} = \frac{1}{k_{\text{imp}}} \sum_{j \in \mathcal{N}_{k}(Z_{\text{excluded}})} \mathbf{w}_j$$
+```text
+ŵ_{Z_excluded} = (1 / k_imp) * ∑_{j ∈ N_k(Z_excluded)} w_j
+```
 
 Where *k*<sub>imp</sub> = 2 optimal chemical neighbors (e.g., averaging Arsenic As and Bromine Br embeddings to reconstruct Selenium Se).
+
 
 ---
 
