@@ -1,0 +1,22 @@
+# Tier 1 CGCNN Configuration (Crystal Graph Neural Network)
+experiment_name: "tier1_cgcnn_encoder"
+tier: 1
+representation: "cgcnn"
+target_property: "formation_energy"
+split_type: "element_out"
+retrieval_mode: "none"
+seed: 42
+device: "cuda"
+
+cgcnn:
+  hidden_dim: 64
+  n_conv_layers: 3
+  cutoff_radius: 8.0
+  n_gaussian_basis: 40
+  dropout_rate: 0.1
+  batch_size: 512
+  n_epochs: 400
+  lr: 0.001
+  weight_decay: 0.0001
+  lr_scheduler: "cosine"
+  early_stopping_patience: 50
