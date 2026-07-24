@@ -101,7 +101,7 @@ def load_rf_model(prop, split_type):
         logger.warning("RF checkpoint tier0_%s_%s_model.pkl not found. Initializing fallback RF model.", prop, split_type)
         rf = RandomForestRegressor(n_estimators=1, random_state=42)
         scaler = StandardScaler()
-        dummy_x = np.zeros((2, 145))
+        dummy_x = np.zeros((2, 376))
         dummy_y = np.zeros(2)
         scaler.fit(dummy_x)
         rf.fit(scaler.transform(dummy_x), dummy_y)
