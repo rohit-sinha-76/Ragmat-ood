@@ -76,8 +76,8 @@ All split index JSON files are provided in `data/splits/`:
 
 #### 1. Clone the Repository
 ```bash
-git clone https://github.com/YOUR-USERNAME/ragmat-ood.git
-cd ragmat-ood
+git clone https://github.com/rohit-sinha-76/Ragmat-ood.git
+cd Ragmat-ood
 ```
 
 #### 2. Option A: Conda Environment (Recommended)
