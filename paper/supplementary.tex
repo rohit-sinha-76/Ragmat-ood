@@ -1,0 +1,298 @@
+\documentclass[preprint,12pt]{elsarticle}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+
+% --- Macros (preserved from main.tex) ---
+\newcommand{\mae}{\text{MAE}}
+\newcommand{\rmse}{\text{RMSE}}
+\newcommand{\auroc}{\text{AUROC}}
+\newcommand{\iid}{\textsc{iid}}
+\newcommand{\famout}{\textsc{family-out}}
+\newcommand{\elout}{\textsc{element-out}}
+\newcommand{\cgcnn}{\texttt{CGCNN}}
+\newcommand{\rf}{\texttt{RF}}
+\newcommand{\zsni}{\textsc{zsni}}
+\newcommand{\ragmat}{\textsc{RAGMat-OOD}}
+\newcommand{\eg}{\textit{e.g.},}
+\newcommand{\ie}{\textit{i.e.},}
+\newcommand{\etal}{\textit{et al.}}
+
+% ============================================================
+\begin{document}
+
+\begin{frontmatter}
+\title{Supplementary Material for: Compositional Distribution Shift in Crystal Graph Convolutional Neural Networks: Mechanistic Diagnosis, RAG Audit, Mahalanobis Gating, and Zero-Shot Imputation}
+
+\author[inst1]{Rohit Sinha}
+\address[inst1]{Government Engineering College Jagdalpur, Jagdalpur, Chhattisgarh, 494005, India}
+\end{frontmatter}
+
+%% Sections are labelled S1, S2, S3 ...
+%% Cross-referenced in main.tex as: (Supplementary Material Section~S[N])
+
+% ============================================================
+\section*{S1: Extended Background and Related Work}
+\label{supp:s1}
+
+The paragraphs below extend the condensed background in Section~2 of the
+main text with full literature context for each thematic area covered in the
+experiment.
+
+\paragraph{Element-exclusion split: design rationale.}
+The 15 withheld elements are
+Sc ($Z=21$), Ti ($Z=22$), V ($Z=23$), Cr ($Z=24$), Mn ($Z=25$),
+Fe ($Z=26$), Co ($Z=27$), Ni ($Z=28$), Cu ($Z=29$), Zn ($Z=30$),
+Y ($Z=39$), Zr ($Z=40$), Nb ($Z=41$), Mo ($Z=42$), and Se ($Z=34$).
+Fourteen of these form a contiguous block of 3d and 4d transition metals
+($Z=21$--$30$ and $Z=39$--$42$) that appear at high structural frequency
+in the JARVIS-DFT database as coordination-center cations in oxide,
+chalcogenide, and metallic frameworks. Selenium (Group 16, row 4) was
+included as a non-metallic p-block probe to test whether the zero-gradient
+lookup failure extends from d-block coordination centers to covalent and
+semiconductor bonding environments. Both chemical rationales are satisfied:
+all 15 elements belong to periods 4--5, ensuring that the \elout{} test
+set ($N=27{,}911$ structures) is large enough to yield statistically
+precise \mae{} estimates under $B=10{,}000$ bootstrap resamples
+(bootstrap standard error $< 0.003$\,eV/atom for Formation Energy).
+The selection criterion is mechanistically grounded, not chosen to maximize
+the observed error ratio; the zero-gradient failure mechanism
+$\partial\mathcal{L}/\partial\bm{W}_{\text{emb}}[:,e]=\mathbf{0}$
+holds for any excluded element regardless of species identity.
+
+\paragraph{OOD detection methods for graph neural networks.}
+Mahalanobis-distance detectors in deep latent spaces provide calibration-free
+OOD scores without auxiliary classifiers~\cite{lee2018simple}. The computational
+cost is dominated by a single $64 \times 64$ matrix inversion computed once
+over the training embeddings $\{\bm{z}_i\}_{i \in \mathcal{D}_{\text{train}}}$;
+at inference, each query requires only one matrix-vector multiply and a
+scalar norm computation. Recent graph-specific OOD frameworks such as
+GOOD-D~\cite{liu2023good} and data-centric augmentation methods~\cite{wu2023data}
+require contrastive or reconstruction-based training objectives that would
+necessitate re-engineering the \cgcnn{} training pipeline from scratch.
+Using Mahalanobis distance as a post-hoc probe over the frozen embedding space
+preserves the exact model weights from the baseline experiment, ensuring that
+the reported $\auroc{} > 0.999$ reflects the original encoder geometry
+rather than a retrained or augmented variant. The near-perfect separation
+achieves because the excluded-element node embeddings
+$\bm{h}_e = \bm{W}_{\text{emb}}[:,e]$ are random vectors that span a
+high-norm shell in $\mathbb{R}^{64}$ orthogonal to the trained embedding
+manifold by construction---not because Mahalanobis detection is in general
+reliable for arbitrary materials OOD tasks.
+
+\paragraph{Conformal prediction under distributional shift.}
+Split-conformal prediction~\cite{papadopoulos2002inductive} provides marginal
+coverage guarantees under the exchangeability assumption: calibration-set
+and test-set residuals must be drawn exchangeably from the same distribution.
+This assumption is violated in the \elout{} setting because the calibration
+partition contains only structures with seen elements, while the test partition
+contains exclusively structures with excluded elements whose node embeddings
+are random-valued~\cite{barber2023conformal, tibshirani2019conformal}.
+The empirical coverage collapse to 18.5\% (Table~5, main text) for the broken
+\cgcnn{} encoder is therefore not a failure of conformal calibration itself,
+but a direct consequence of the error distribution of excluded-element
+structures being far outside the calibration residual support: test-set
+\mae{} averages 0.557\,eV/atom, while the calibration quantile is only
+$q_{0.90} = 0.162$\,eV. Applying \zsni{} reduces test \mae{} to
+0.183\,eV/atom, bringing test-set errors back toward the calibration
+scale and recovering empirical coverage to 58.6\% under the same fixed
+bound. Post-hoc recalibration using held-out test residuals would produce
+nominally valid intervals but would leak test-set information; we report
+the uncorrected coverage to accurately characterise the deployment scenario.
+
+\paragraph{Comparison with the three most closely related works.}
+\cite{omee2024} benchmarks GNNs under OOD conditions across five split
+categories and three MatBench datasets, demonstrating that generalisation
+gaps are architecture-dependent and that prototype-family withholding
+produces statistically significant but moderate error inflation for
+graph models---consistent with the \famout{} result ($2.0\times$ for
+\cgcnn{} Formation Energy). Their analysis does not isolate the failure
+mechanism at the weight-matrix level, and no inference-time repair
+strategy is proposed. \cite{li2024} probes OOD behaviour across diverse
+property types and identifies element-space extrapolation as a
+particularly severe failure regime---consistent with the \elout{} results
+reported here---but does not distinguish element-exclusion (zero-gradient
+lookup collapse) from compositional-ratio variation (which does not trigger
+the same failure because all training elements remain present). \cite{wang2024rag4mol}
+proposes post-pooling RAG for molecular property prediction and reports
+improvements over encoder-only baselines; however, the comparison is made
+without a random-vector control, leaving capacity gains from the fusion head
+confounded with structural retrieval benefit. The present work closes this
+gap by demonstrating overlapping bootstrap CIs across all 12 true-neighbor
+vs.\ random-control property-split combinations (pairwise \mae{}
+differences $\le 0.010$\,eV/atom), establishing that the post-pooling
+fusion head provides no statistically reliable retrieval benefit over
+randomly sampled training embeddings.
+
+% ============================================================
+\section*{S2: Real-Compound Literature Validation Suite}
+\label{supp:s2}
+
+Table~\ref{tab:supp_literature} details the empirical audit of 24 real literature compounds ($\text{Si}$, $\text{Ge}$, $\text{C}$, $\text{GaAs}$, $\text{GaP}$, $\text{GaSb}$, $\text{InP}$, $\text{InAs}$, $\text{InSb}$, $\text{AlP}$, $\text{AlAs}$, $\text{AlSb}$, $\text{ZnS}$, $\text{ZnSe}$, $\text{ZnTe}$, $\text{CdS}$, $\text{CdSe}$, $\text{CdTe}$, $\text{ZnO}$, $\text{NaCl}$, $\text{SrTiO}_3$, $\text{BaTiO}_3$, $\text{PbTiO}_3$, $\text{CaTiO}_3$) evaluated against DFT ground-truth values. The table compares unpatched \cgcnn{} predictions ($\mathbf{W}_{\text{emb}} \in \mathbb{R}^{64 \times 92}$) with \rf{} baseline predictions across both Formation Energy ($E_f$, eV/atom) and Band Gap ($E_g$, eV).
+
+\begin{table}[ht]
+\centering
+\caption{Empirical evaluation of 24 real literature compounds covering 10 inorganic chemical families. Under element exclusion, unpatched \cgcnn{} fails severely (predicting positive $E_f$ or $0.00$\,eV $E_g$), whereas Mahalanobis Gating intercepts OOD samples ($S(\mathbf{z}) > \tau$) and routes them to \rf{} fallback or \zsni{} recovery.}
+\label{tab:supp_literature}
+\resizebox{\linewidth}{!}{%
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccccc}
+\toprule
+ & & \multicolumn{3}{c}{\textbf{Formation Energy ($E_f$, eV/atom)}} & \multicolumn{3}{c}{\textbf{Band Gap ($E_g$, eV)}} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8}
+Formula & Chemical Class & DFT $y_{\text{true}}$ & \cgcnn{} & \rf{} & DFT $y_{\text{true}}$ & \cgcnn{} & \rf{} \\
+\midrule
+$\text{Si}$ & Elemental Semi & $0.00$ & $-0.001$ & $+0.003$ & $0.60$ & $0.000$ & $0.743$ \\
+$\text{Ge}$ & Elemental Semi & $0.00$ & $+0.047$ & $+0.054$ & $0.10$ & $0.000$ & $0.018$ \\
+$\text{C}$ & Diamond Cubic & $+0.08$ & $+0.049$ & $+0.177$ & $4.10$ & $4.170$ & $4.246$ \\
+$\text{GaAs}$ & III-V Semi & $-0.43$ & $-0.076$ & $+0.085$ & $0.75$ & $0.000$ & $0.500$ \\
+$\text{GaP}$ & III-V Semi & $-0.55$ & $-0.256$ & $+0.014$ & $1.60$ & $0.000$ & $0.490$ \\
+$\text{GaSb}$ & III-V Semi & $-0.21$ & $+0.701$ & $+0.079$ & $0.40$ & $0.000$ & $0.419$ \\
+$\text{InP}$ & III-V Semi & $-0.37$ & $+0.040$ & $+0.043$ & $0.90$ & $0.000$ & $0.209$ \\
+$\text{InAs}$ & III-V Semi & $-0.28$ & $+0.375$ & $+0.105$ & $0.30$ & $0.000$ & $0.093$ \\
+$\text{InSb}$ & III-V Semi & $-0.16$ & $+0.531$ & $+0.125$ & $0.15$ & $0.000$ & $0.111$ \\
+$\text{AlP}$ & III-V Semi & $-0.88$ & $-0.697$ & $-0.569$ & $1.60$ & $0.000$ & $1.315$ \\
+$\text{AlAs}$ & III-V Semi & $-0.72$ & $-0.620$ & $-0.499$ & $1.40$ & $0.000$ & $1.425$ \\
+$\text{AlSb}$ & III-V Semi & $-0.45$ & $-0.132$ & $-0.191$ & $1.20$ & $0.000$ & $1.039$ \\
+$\text{ZnS}$ & II-VI Chalcogenide & $-1.08$ & $-0.897$ & $-0.776$ & $2.10$ & $2.078$ & $1.993$ \\
+$\text{ZnSe}$ & II-VI ($\text{Se}$ Excl) & $-0.82$ & $+0.207$ & $-0.367$ & $1.30$ & $0.000$ & $0.425$ \\
+$\text{ZnTe}$ & II-VI ($\text{Te}$ Excl) & $-0.60$ & $+1.060$ & $+0.108$ & $1.20$ & $0.000$ & $0.362$ \\
+$\text{CdS}$ & II-VI Chalcogenide & $-0.85$ & $-0.657$ & $-0.578$ & $1.10$ & $1.053$ & $0.978$ \\
+$\text{CdSe}$ & II-VI ($\text{Se}$ Excl) & $-0.68$ & $+1.070$ & $-0.255$ & $0.90$ & $0.000$ & $0.454$ \\
+$\text{CdTe}$ & II-VI ($\text{Te}$ Excl) & $-0.50$ & $+0.762$ & $+0.103$ & $0.80$ & $0.000$ & $0.343$ \\
+$\text{ZnO}$ & II-VI Oxide & $-1.70$ & $-1.567$ & $-1.510$ & $0.80$ & $0.941$ & $0.734$ \\
+$\text{NaCl}$ & Alkali Halide & $-2.10$ & $-1.964$ & $-1.910$ & $5.00$ & $4.786$ & $5.044$ \\
+$\text{SrTiO}_3$ & Perovskite Oxide & $-3.65$ & $-3.382$ & $-3.318$ & $1.80$ & $1.593$ & $1.868$ \\
+$\text{BaTiO}_3$ & Perovskite Oxide & $-3.45$ & $-3.365$ & $-3.347$ & $1.70$ & $1.466$ & $1.767$ \\
+$\text{PbTiO}_3$ & Perovskite ($\text{Pb}$ Excl) & $-2.60$ & $-2.464$ & $-2.493$ & $1.50$ & $1.256$ & $1.633$ \\
+$\text{CaTiO}_3$ & Perovskite Oxide & $-3.75$ & $-3.337$ & $-3.351$ & $1.90$ & $2.270$ & $1.922$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+% ============================================================
+\section*{S3: Extended Comparison with Related Works}
+\label{supp:s3}
+\begin{thebibliography}{99}
+
+\bibitem{lee2018simple}
+K.~Lee, K.~Lee, H.~Lee, J.~Shin,
+\newblock A simple unified framework for detecting out-of-distribution samples and adversarial attacks,
+\newblock \textit{Advances in Neural Information Processing Systems} 31 (2018).
+\newblock \url{https://arxiv.org/abs/1807.03888}.
+
+\bibitem{liu2023good}
+Y.~Liu, K.~Ding, H.~Liu, R.~Shirvany,
+\newblock {GOOD-D}: On unsupervised graph out-of-distribution detection,
+\newblock in: \textit{Proceedings of the Sixteenth ACM WSDM}, 2023.
+\newblock \url{https://doi.org/10.1145/3539597.3570446}.
+
+\bibitem{wu2023data}
+Q.~Wu, H.~Zhang, J.~Yan, X.~Hu,
+\newblock A data-centric framework to endow graph neural networks with out-of-distribution
+  detection ability,
+\newblock in: \textit{Proceedings of the 29th ACM SIGKDD}, 2023.
+\newblock \url{https://doi.org/10.1145/3580305.3599244}.
+
+\bibitem{papadopoulos2002inductive}
+H.~Papadopoulos, K.~Proedrou, V.~Vovk, A.~Gammerman,
+\newblock Inductive confidence machines for regression,
+\newblock in: \textit{European Conference on Machine Learning}, 2002, pp.~345--356.
+\newblock \url{https://doi.org/10.1007/3-540-36755-1_29}.
+
+\bibitem{barber2023conformal}
+R.~F. Barber, E.~J. Cand\`{e}s, A.~Ramdas, R.~J. Tibshirani,
+\newblock Conformal prediction beyond exchangeability,
+\newblock \textit{The Annals of Statistics} 51 (2023) 816--845.
+\newblock \url{https://doi.org/10.1214/23-aos2276}.
+
+\bibitem{tibshirani2019conformal}
+R.~J. Tibshirani, R.~F. Barber, E.~J. Cand\`{e}s, J.~Duchi,
+\newblock Conformal prediction under covariate shift,
+\newblock \textit{Advances in Neural Information Processing Systems} 32 (2019).
+\newblock \url{https://arxiv.org/abs/1904.06019}.
+
+\bibitem{omee2024}
+S.~S. Omee, N.~Fu, R.~Dong, J.~Hu,
+\newblock Structure-based out-of-distribution ({OOD}) materials property prediction:
+  a benchmark study,
+\newblock \textit{npj Computational Materials} 10 (2024) 1--13.
+\newblock \url{https://doi.org/10.1038/s41524-024-01316-4}.
+
+\bibitem{li2024}
+K.~Li, A.~N. Rubungo, X.~L. Lei, \etal,
+\newblock Probing out-of-distribution generalization in machine learning for materials,
+\newblock \textit{Communications Materials} 6 (2025) 1--9.
+\newblock \url{https://doi.org/10.1038/s43246-024-00731-w}.
+
+\bibitem{wang2024rag4mol}
+Z.~Wang, X.~Wang, J.~Tang,
+\newblock Retrieval-augmented generation for molecular machine learning,
+\newblock arXiv preprint arXiv:2407.01411, 2024.
+\newblock \url{https://arxiv.org/abs/2407.01411}.
+
+% ============================================================
+\section*{S4: Hyperparameter Configuration Summary}
+\label{supp:s4}
+
+Table~\ref{tab:supp_hyperparams} provides a comprehensive reference for all model
+architectures, training optimization parameters, and RAG fusion head configurations
+used across the experimental pipeline. All seeds are fixed at 42; all \cgcnn{} runs
+use identical initialization to enable clean across-split comparison.
+
+\begin{table}[ht]
+\centering
+\caption{Complete hyperparameter specification across models, training protocols, and retrieval fusion heads.}
+\label{tab:supp_hyperparams}
+\resizebox{\linewidth}{!}{%
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lll}
+\toprule
+Component & Parameter & Value / Configuration \\
+\midrule
+\textbf{\rf{} Baseline} & Input Descriptors & 145-dimensional Magpie compositional features \\
+ & Number of Trees & 200 estimators (\texttt{n\_estimators=200}) \\
+ & Max Features & 1.0 (all features considered per split) \\
+ & Min Samples Leaf / Split & \texttt{min\_samples\_leaf=1}, \texttt{min\_samples\_split=2} \\
+ & Tree Depth & Unbounded (\texttt{max\_depth=None}) \\
+\midrule
+\textbf{\cgcnn{} Encoder} & Atom Input & 92-dimensional species one-hot vectors \\
+ & Embedding Projection & $\bm{W}_{\text{emb}} \in \mathbb{R}^{64 \times 92}$ (64-dim hidden space) \\
+ & Contact Cutoff & $8.0\,\text{\AA}$ radial cutoff \\
+ & Distance Expansion & 40 Gaussian basis functions \\
+ & Convolutions & 3 gated message-passing layers ($\sigma \odot \tanh$) \\
+ & Graph Pooling & Global mean-pooling (64-dim graph vector) \\
+ & Prediction Head & 2-layer MLP ($64 \to 32 \to 1$, ReLU, dropout 0.1) \\
+ & Total Parameters & 98,497 trainable parameters \\
+\midrule
+\textbf{Training Protocol} & Optimizer & AdamW (learning rate $10^{-3}$, weight decay $10^{-4}$) \\
+ & Warmup / Schedule & 10-epoch linear warmup, Cosine Annealing (400 max) \\
+ & Early Stopping & Patience 50 epochs (minimum 150 epochs) \\
+ & Loss Function & Huber loss ($\delta = 0.1$) \\
+ & Batch Size & 512 \\
+ & Target Normalization & \texttt{StandardScaler} fitted on $\bm{y}_{\text{train}}$ only \\
+ & Random Seeds & Fixed at 42 across all splits and initializations \\
+\midrule
+\textbf{RAG Fusion Heads} & FAISS Retrieval & $L^2$-normalized index over 64-dim training embeddings \\
+ & Nearest Neighbors & $K_{\text{ret}} = 5$ retrieved neighbors \\
+ & Concat Head ($E_f$) & 3-layer MLP ($128 \to 64 \to 1$, ReLU, dropout 0.0) \\
+ & Cross-Attn Head ($E_g$) & Single-head cross-attention ($d_k = 64$), $64 \to 1$ linear \\
+ & Fusion Optimizer & AdamW (learning rate $10^{-3}$, weight decay $10^{-4}$) \\
+ & Fusion Loss / Batch & L1 loss, batch size 1,024, max 120 epochs \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\end{thebibliography}
+
+\end{document}

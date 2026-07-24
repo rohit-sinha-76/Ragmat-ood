@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite it as below."
+authors:
+- family-names: "[Author Surname]"
+  given-names: "[Author First Name]"
+  orcid: "https://orcid.org/0000-0000-0000-0000"
+title: "ragmat-ood: Compositional Distribution Shift in Crystal Graph Convolutional Neural Networks"
+version: 1.0.0
+date-released: 2026-07-24
+url: "https://github.com/[username]/ragmat-ood"
+repository-code: "https://github.com/[username]/ragmat-ood"
+license: MIT
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Sinha"
+    given-names: "Rohit"
+  title: "Compositional Distribution Shift in Crystal Graph Convolutional Neural Networks: Mechanistic Diagnosis, RAG Audit, Mahalanobis Gating, and Zero-Shot Imputation"
+  journal: "Computational Materials Science"
+  year: 2026
+  doi: "10.XXXX/XXXXXXX"
