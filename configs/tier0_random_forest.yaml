@@ -1,0 +1,18 @@
+# Tier 0 Baseline Configuration (Random Forest on Magpie Descriptors)
+experiment_name: "tier0_rf_baseline"
+tier: 0
+target_property: "formation_energy"
+split_type: "element_out"
+representation: "matminer"
+retrieval_mode: "none"
+seed: 42
+
+tier0:
+  composition_featurizer: "ElementProperty_magpie"
+  structure_featurizer: "CrystalNNFingerprint_SiteStatsFingerprint"
+  downstream_model: "random_forest"
+  n_estimators: 200
+  max_features: 1.0           # All features considered at each split (sklearn default)
+  min_samples_leaf: 1         # sklearn default
+  min_samples_split: 2        # sklearn default
+  # max_depth: null (unbounded) — sklearn default; no depth limit applied
