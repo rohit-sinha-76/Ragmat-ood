@@ -11,7 +11,7 @@
 
 ---
 
-## 📌 Executive Summary
+## Executive Summary
 
 When machine learning models are deployed for **accelerated materials discovery**, they frequently encounter chemical compositions containing chemical elements that were never seen during model training. While standard benchmarks evaluate models under in-distribution (IID) splits, real-world deployment requires predicting properties for novel chemical spaces under **out-of-distribution (OOD) compositional shift**.
 
@@ -34,7 +34,7 @@ In this study, we investigate the root failure mechanism of **Crystal Graph Neur
                                                                        └──────────────────────────┘
 ```
 
-### 🔬 Key Scientific Discoveries:
+### Key Scientific Discoveries:
 1. **The Weight-Level Failure Mode:** CGCNN's formation energy error increases **8.4-fold** under element exclusion (MAE degrades from $0.066$ to $0.557$\,eV/atom). Unvisited element columns in the first linear embedding matrix $\mathbf{W}_{\text{emb}} \in \mathbb{R}^{64 \times 92}$ receive zero gradients during training ($\nabla_{\mathbf{W}_{\text{excluded}}} \mathcal{L} = \mathbf{0}$), retaining random initial values that inject isotropic noise into every downstream message-passing layer.
 2. **The RAG Audit:** Post-pooling retrieval augmentation (RAG) performs statistically indistinguishably from a capacity-matched random control vector ($p = 0.568$), proving that late-stage fusion after global mean-pooling cannot recover structural details already destroyed by uninitialized node features.
 3. **Inference-Time Recovery (Without Retraining):**
@@ -43,7 +43,7 @@ In this study, we investigate the root failure mechanism of **Crystal Graph Neur
 
 ---
 
-## 📐 Mathematical Formulation
+## Mathematical Formulation
 
 ### 1. The Weight-Level Failure Mechanism
 Crystal GNNs convert atomic species $Z_i$ into initial node representations $\mathbf{h}_i^{(0)}$ via a linear lookup layer:
@@ -65,7 +65,7 @@ Where $k_{\text{imp}} = 2$ optimal chemical neighbors (e.g., averaging Arsenic $
 
 ---
 
-## 📊 Benchmark Results
+## Benchmark Results
 
 Performance across 93,902 JARVIS-DFT crystals (with 95% bootstrap confidence intervals):
 
@@ -80,7 +80,7 @@ Performance across 93,902 JARVIS-DFT crystals (with 95% bootstrap confidence int
 
 ---
 
-## ⚡ Quick Start & Reproduction
+## Quick Start & Reproduction
 
 ### 1. Clone & Environment Setup
 ```bash
@@ -120,7 +120,7 @@ python scripts/run_bootstrap_cis.py # Generates final_result/bootstrap_cis_repor
 
 ---
 
-### 🗺️ Paper-to-Code Mapping Matrix
+### Paper-to-Code Mapping Matrix
 
 For complete transparency, this matrix maps every table and figure in the manuscript to its generating script and metric dump:
 
@@ -131,7 +131,7 @@ For complete transparency, this matrix maps every table and figure in the manusc
 | **Table 3 & Fig 3** | Zero-Shot Node Imputation (ZSNI) $k$-ablation | `python scripts/run_conformal.py` | `final_result/conformal_report.md` |
 | **Table 4** | Split-Conformal Prediction Coverage & Interval Widths | `python scripts/run_conformal.py` | `final_result/conformal_report.md` |
 | **Figure 1** | Main MAE Comparison Bar Charts | `python scripts/generate_figures.py` | `paper/figures/fig1_mae_comparison.pdf` |
-| **Figure 4** | Periodic Table Chemical Proximity & Imputation Map | `python scripts/generate_figures.py` | `paper/figures/fig4_periodic_map.pdf` |
+| **Figure 4** | Periodic Table Chemical Proximity & Imputation Map | `python scripts/generate_figures.py` | `paper/figures/fig3_zsni_ablation.pdf` |
 | **Entire Suite** | 1-Click Master Reproduction Workflow | `bash scripts/reproduce_all.sh` | `final_result/` |
 
 ---
@@ -143,38 +143,48 @@ docker-compose up --build
 
 ---
 
-## 📁 Repository Architecture
+## Repository Architecture
 
 ```text
 Ragmat-ood/
-├── configs/             # Hyperparameter configurations (base.yaml, tier0, tier1)
+├── configs/                          # Master & reference configuration files
+│   ├── configs/base.yaml             # Global hyperparameter defaults
+│   ├── configs/tier0_random_forest.yaml
+│   └── configs/tier1_cgcnn.yaml
 ├── data/
-│   └── splits/          # Reproducible split JSONs (IID, Family-Out, Element-Out)
-├── docs/                # Extended documentation & architectural design docs
-├── final_result/        # Metric JSON dumps & Markdown evaluation reports
-├── paper/               # Camera-ready manuscript source (main.tex, supplementary.tex, figures)
-├── ragmat/              # Core Python research package
-│   ├── data/            # JARVIS dataset loader & graph builders
-│   ├── detection/       # Mahalanobis OOD detector
-│   ├── encoders/        # CGCNN GNN message-passing architecture
-│   ├── fusion/          # RAG retrieval fusion heads & matched random controls
-│   ├── imputation/      # Zero-Shot Node Imputation (ZSNI) algorithm
-│   ├── retrieval/       # FAISS indexing & data leakage audit
-│   └── uncertainty/     # Split-conformal prediction calibration
-├── scripts/             # Production reproduction & inference CLI tools
-├── tests/               # 35 unit and integration tests
-├── .github/workflows/   # Automated GitHub Actions CI workflow
-├── CITATION.cff         # Citation metadata
-├── Dockerfile           # Container reproduction environment
-├── docker-compose.yml   # Multi-container reproduction setup
-├── LICENSE              # MIT License
-├── METHODOLOGY.md       # Comprehensive mathematical & benchmark formulation
-└── REPRODUCE.md         # Step-by-step reproduction instructions
+│   └── splits/                       # Pre-computed split JSONs (IID, Family-Out, Element-Out)
+├── docs/                             # Extended documentation & architectural design docs
+├── final_result/                     # Metric JSON dumps & Markdown evaluation reports
+├── paper/                            # Camera-ready manuscript source (main.tex, supplementary.tex, figures)
+│   ├── paper/main.tex                # Main paper source
+│   ├── paper/supplementary.tex       # Supplementary information
+│   └── paper/figures/                # Vector PDF and PNG figures
+├── ragmat/                           # Core Python research package
+│   ├── ragmat/data/                  # JARVIS dataset loader & graph builders
+│   ├── ragmat/detection/             # Mahalanobis OOD detector
+│   ├── ragmat/encoders/              # CGCNN GNN message-passing architecture
+│   ├── ragmat/fusion/                # RAG retrieval fusion heads & matched random controls
+│   ├── ragmat/imputation/            # Zero-Shot Node Imputation (ZSNI) algorithm
+│   ├── ragmat/retrieval/             # FAISS indexing & data leakage audit
+│   └── ragmat/uncertainty/           # Split-conformal prediction calibration
+├── scripts/                          # Production reproduction & inference CLI tools
+│   ├── scripts/run_phase6.py         # Master GNN training pipeline
+│   ├── scripts/run_gating_analysis.py  # Mahalanobis gating & fallback evaluation
+│   ├── scripts/run_conformal.py      # ZSNI recovery & conformal UQ evaluation
+│   └── scripts/run_bootstrap_cis.py  # Statistical CI generator
+├── tests/                            # 35 unit and integration tests
+├── .github/workflows/ci.yml          # Automated GitHub Actions CI workflow
+├── CITATION.cff                      # Citation metadata
+├── Dockerfile                        # Container reproduction environment
+├── docker-compose.yml                # Multi-container reproduction setup
+├── LICENSE                           # MIT License
+├── METHODOLOGY.md                    # Comprehensive mathematical & benchmark formulation
+└── REPRODUCE.md                      # Step-by-step reproduction instructions
 ```
 
 ---
 
-## 📑 Citation
+## Citation
 
 If you find this codebase or manuscript useful in your research, please cite:
 
@@ -190,6 +200,6 @@ If you find this codebase or manuscript useful in your research, please cite:
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
