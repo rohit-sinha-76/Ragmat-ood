@@ -31,6 +31,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _RESULTS_DIR  = _PROJECT_ROOT / "final_result"
 _LOGS_DIR     = _PROJECT_ROOT / "final_result" / "logs"
 
+_LOGS_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",

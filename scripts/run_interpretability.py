@@ -30,6 +30,7 @@ _RESULTS_DIR = _PROJECT_ROOT / "final_result"
 _SPLITS_DIR  = _PROJECT_ROOT / "data" / "splits"
 _LOGS_DIR    = _PROJECT_ROOT / "final_result" / "logs"
 
+_LOGS_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(message)s",
                     handlers=[logging.StreamHandler(),

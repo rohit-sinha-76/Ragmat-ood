@@ -67,6 +67,7 @@ RF_TEST_MAE = {
     "band_gap":         {"iid": 0.2261, "family_out": 0.2529, "element_out": 0.3203},
 }
 
+_LOGS_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
