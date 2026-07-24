@@ -37,8 +37,9 @@ COPY requirements.txt /app/
 # Install python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Create a non-root user for executing research scripts
-RUN groupadd -g 1000 researcher && \
+# Create runtime directories and a non-root user for executing research scripts
+RUN mkdir -p /app/logs /app/checkpoints /app/final_result /app/data && \
+    groupadd -g 1000 researcher && \
     useradd -u 1000 -g researcher -m researcher && \
     chown -R researcher:researcher /app
 

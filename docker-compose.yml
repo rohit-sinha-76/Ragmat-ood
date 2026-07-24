@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   ragmat-ood:
     build:
@@ -15,7 +13,7 @@ services:
       # Mount directory containing GNN PyTorch models checkpoints
       - ./checkpoints:/app/checkpoints
     environment:
-      - WANDB_API_KEY=${WANDB_API_KEY}
+      - WANDB_API_KEY=${WANDB_API_KEY:-}
     deploy:
       resources:
         reservations:
@@ -23,5 +21,5 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-    # Default command is overridden to allow bash session when running docker-compose run
+    # Default command runs test suite inside container
     command: pytest tests/ -v
