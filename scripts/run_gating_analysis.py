@@ -102,7 +102,23 @@ def load_encoder(prop: str, split: str, device: torch.device):
         path = _CHECKPOINTS_DIR / name
         if not path.exists():
             path = _PROJECT_ROOT / "old_files" / name
-    
+
+    if not path.exists():
+        logger.warning("Checkpoint %s not found. Initializing fresh encoder.", f"tier1_{prop}_{split}_base_best.pt")
+        encoder = CGCNNEncoder(
+            node_dim=CGCNN_SPEC["node_dim"],
+            edge_dim=CGCNN_SPEC["edge_dim"],
+            hidden_dim=DIM,
+            n_conv_layers=CGCNN_SPEC["n_conv_layers"],
+            dropout_rate=CGCNN_SPEC["dropout_rate"],
+        ).to(device)
+        encoder.eval()
+        for p_ in encoder.parameters():
+            p_.requires_grad = False
+        y_scaler = StandardScaler()
+        y_scaler.fit([[0.0]])
+        return encoder, y_scaler, []
+
     name = path.name
     ckpt = torch.load(str(path), map_location="cpu", weights_only=False)
 
