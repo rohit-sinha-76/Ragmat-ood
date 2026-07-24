@@ -111,7 +111,30 @@ python scripts/run_gating_analysis.py
 
 # 4. Evaluate Zero-Shot Node Imputation & Conformal UQ
 python scripts/run_conformal.py
+
+#### 5. Generate Statistical Reports & Tables
+Generate the exact Markdown summary reports corresponding to Tables 1–5 in the manuscript:
+```bash
+python scripts/run_bootstrap_cis.py # Generates final_result/bootstrap_cis_report.md
 ```
+
+---
+
+### 🗺️ Paper-to-Code Mapping Matrix
+
+For complete transparency, this matrix maps every table and figure in the manuscript to its generating script and metric dump:
+
+| Manuscript Item | Description | Generating Script / Tool | Saved Output Location |
+|---|---|---|---|
+| **Table 1** | Primary MAE Benchmark across IID, Family-Out, & Element-Out | `python scripts/run_phase6.py` | `final_result/*.json` |
+| **Table 2 & Fig 2** | Mahalanobis OOD Gating AUROC & Error Routing | `python scripts/run_gating_analysis.py` | `final_result/gating_report.md` |
+| **Table 3 & Fig 3** | Zero-Shot Node Imputation (ZSNI) $k$-ablation | `python scripts/run_conformal.py` | `final_result/conformal_report.md` |
+| **Table 4** | Split-Conformal Prediction Coverage & Interval Widths | `python scripts/run_conformal.py` | `final_result/conformal_report.md` |
+| **Figure 1** | Main MAE Comparison Bar Charts | `python scripts/generate_figures.py` | `paper/figures/fig1_mae_comparison.pdf` |
+| **Figure 4** | Periodic Table Chemical Proximity & Imputation Map | `python scripts/generate_figures.py` | `paper/figures/fig4_periodic_map.pdf` |
+| **Entire Suite** | 1-Click Master Reproduction Workflow | `bash scripts/reproduce_all.sh` | `final_result/` |
+
+---
 
 ### 4. Docker Reproduction
 ```bash
