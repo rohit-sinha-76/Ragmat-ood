@@ -1,0 +1,135 @@
+# ==============================================================================
+# Strict RAGMat-OOD Git Ignore Policy
+# Ensures ONLY clean, reproducible source code, configs, and manuscript source
+# are committed to GitHub.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Temporary Files, Scratch Scripts & Old Drafts
+# ------------------------------------------------------------------------------
+scratch/
+old_files/
+.dbg/
+new_reqs.txt
+old_reqs.txt
+ragmat_ood_research_presentation.pptx
+paper/main_before_cuts.tex
+PROJECT_STATUS.md
+
+# ------------------------------------------------------------------------------
+# Python, Virtual Environments & Cache Folders
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.venv/
+env/
+venv/
+
+# ------------------------------------------------------------------------------
+# Heavy Model Checkpoints, Pickles, Binaries & Weights (Host on Zenodo)
+# ------------------------------------------------------------------------------
+checkpoints/
+final_result/checkpoints/
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.safetensors
+*.onnx
+*.pkl
+*.pickle
+*.joblib
+
+# ------------------------------------------------------------------------------
+# Data Directories, Raw JSON Dumps & Prediction CSV Dumps
+# (Raw structures are downloaded automatically via jarvis-tools API)
+# ------------------------------------------------------------------------------
+data/raw/
+data/features/
+data/graphs/
+data/indices/
+data/A3SbX3_cifs/
+data/literature_validation/
+data/synthetic_validation/
+*.csv
+
+# Explicitly ensure essential research split indices and ground-truth validation JSONs ONLY are whitelisted:
+!data/splits/
+!data/splits/*.json
+!data/checksums.txt
+!data/literature_validation_ground_truth.json
+!data/synthetic_validation_ground_truth.json
+
+# ------------------------------------------------------------------------------
+# Execution Logs, Experiment Traces & Wandb
+# ------------------------------------------------------------------------------
+logs/
+final_result/logs/
+wandb/
+*.log
+
+# ------------------------------------------------------------------------------
+# Final Results (Track ONLY clean markdown reports and summary JSON metrics)
+# All output is written to final_result/ by the pipeline scripts.
+# ------------------------------------------------------------------------------
+!final_result/
+!final_result/*.json
+!final_result/*.md
+
+# ------------------------------------------------------------------------------
+# LaTeX Build & Intermediate Artifacts
+# (Preserves paper/figures/*.pdf and paper/figures/*.png)
+# ------------------------------------------------------------------------------
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.glg
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.ist
+*.out
+*.synctex.gz
+*.toc
+
+# Explicitly ensure manuscript figure PDFs and PNGs are NEVER ignored:
+!paper/figures/*
+
+# ------------------------------------------------------------------------------
+# IDEs, OS & Secret Files
+# ------------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.env
+*.key
+*.pem
+
+# Humanizer Work & Intermediate Draft Artifacts
+paper/humanizer_chunks/
+paper/all_manuscript_prose.txt
+paper/all_manuscript_prose_450w_chunks.txt
+paper/100percent_human_style_sample.txt
+paper/humanizer_style_examples.txt
+paper/humanizer_style_examples_v2.txt
+paper/sample_for_humanizer.txt
+paper/reintegrate_prose.py
+paper/main_draft_pass1.tex
+paper/main_original_backup.tex
+paper/ragmat_ood_draft.tex
+paper/ragmat_ood_draft_backup_20260714.tex
+paper/reference_texts.txt
+*.status

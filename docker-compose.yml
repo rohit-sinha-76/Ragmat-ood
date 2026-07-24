@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  ragmat-ood:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ragmat-ood:latest
+    container_name: ragmat_ood_research
+    volumes:
+      # Mount directory containing training splits, indices, and graph caches
+      - ./data:/app/data
+      # Mount directory containing prediction CSVs and metric reports
+      - ./final_result:/app/final_result
+      # Mount directory containing GNN PyTorch models checkpoints
+      - ./checkpoints:/app/checkpoints
+    environment:
+      - WANDB_API_KEY=${WANDB_API_KEY}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # Default command is overridden to allow bash session when running docker-compose run
+    command: pytest tests/ -v
