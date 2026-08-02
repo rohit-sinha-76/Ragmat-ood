@@ -119,7 +119,7 @@ python scripts/run_gating_analysis.py
 # 4. Evaluate Zero-Shot Node Imputation & Conformal UQ
 python scripts/run_conformal.py
 
-#### 5. Generate Statistical Reports & Tables
+### 5. Generate Statistical Reports & Tables
 Generate the exact Markdown summary reports corresponding to Tables 1–5 in the manuscript:
 ```bash
 python scripts/run_bootstrap_cis.py # Generates final_result/bootstrap_cis_report.md
